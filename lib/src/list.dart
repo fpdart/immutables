@@ -49,9 +49,10 @@ class IList<E> {
 
   IList<E> operator +(_) => add(_);
 
-  IList<E> remove(_) => _ is List
-      ? removeWhere((v) => _.contains(v))
-      : IList(_value.toList()..remove(_));
+  IList<E> removeContains(List<E> _) => removeWhere((v) => _.contains(v));
+
+  IList<E> remove(_) =>
+      _ is List ? removeContains(_) : IList(_value.toList()..remove(_));
 
   IList<E> operator -(_) => remove(_);
 
