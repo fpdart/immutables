@@ -187,4 +187,12 @@ void main() {
     expect((c - 1).value, [2, 3]);
     expect(c.value, [1, 2, 3]);
   });
+
+  test('[] operator', () {
+    expect(a[0], 1);
+    expect(b[0], 'q');
+    expect(c[0], 1);
+    expect(c[1], 2);
+    expect(c[2], 3);
+  });
 }

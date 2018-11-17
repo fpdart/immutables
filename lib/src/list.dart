@@ -51,5 +51,7 @@ class IList<E> {
 
   IList<E> operator -(E _) => remove(_);
 
+  E operator [](int index) => _value[index];
+
   void operator []=(int _, E value) => throw new Exception('Woops');
 }
