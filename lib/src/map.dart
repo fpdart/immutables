@@ -3,7 +3,14 @@
 /// It is a wrapper over a regular [Map]. All read-only methods and operators
 /// are proxied to the corresponding methods of the underlying map object.
 class IMap<K, V> {
-  IMap([Map<K, V> map = const {}]) : _ = Map<K, V>.from(map);
+  /// Creates an instance of [IMap] from a [Map].
+  ///
+  /// Nulls are not allowed neither in keys nor values.
+  IMap([Map<K, V> map = const {}]) : _ = Map<K, V>.from(map) {
+    if (_.containsKey(null)) throw ArgumentError('Null keys are not allowed');
+    if (_.containsValue(null))
+      throw ArgumentError('Null values are not allowed');
+  }
 
   IMap.fromIterable(Iterable iterable, {K key(element), V value(element)})
       : _ = Map<K, V>.fromIterable(iterable, key: key, value: value);
@@ -13,6 +20,9 @@ class IMap<K, V> {
 
   IMap.fromEntries(Iterable<MapEntry<K, V>> entries)
       : _ = Map<K, V>.fromEntries(entries);
+
+  /// Creates an instance of [IMap] from a [Map]. Allows nulls.
+  IMap.nullable(Map<K, V> map) : _ = Map<K, V>.from(map);
 
   final Map<K, V> _;
 

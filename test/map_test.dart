@@ -3,17 +3,27 @@ import 'package:json_matcher/json_matcher.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final empty = IMap();
+  final identity = IMap();
   final colors = IMap({'sky': 'blue', 'grass': 'green', 'sun': 'red'});
   final autumn = IMap({'leaves': 'yellow', 'grass': 'grey'});
 
   test('empty map is empty', () {
-    expect(empty.isEmpty, true);
-    expect(empty.isNotEmpty, false);
-    expect(empty.length, 0);
-    expect(empty.containsValue(42), false);
-    expect(empty.containsKey(42), false);
-    expect(empty['foo'], isNull);
+    expect(identity.isEmpty, true);
+    expect(identity.isNotEmpty, false);
+    expect(identity.length, 0);
+    expect(identity.containsValue(42), false);
+    expect(identity.containsKey('OMG'), false);
+    expect(identity['foo'], isNull);
+  });
+
+  test('nulls are not allowed by default', () {
+    expect(() => IMap({null: 42}), throwsArgumentError);
+    expect(() => IMap({'foo': null}), throwsArgumentError);
+  });
+
+  test('nulls must be allowe explicitly', () {
+    final meh = IMap.nullable({null: 42, 'foo': null});
+    expect(meh.length, 2);
   });
 
   test('can remove elements', () {
