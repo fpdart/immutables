@@ -116,19 +116,19 @@ void main() {
     expect(c.value, [1, 2, 3]);
   });
 
-  test('removeWhereBool', () {
-    expect(a.removeWhereBool((_) => _ == 1).value, []);
-    expect(a.removeWhereBool((_) => _ == 0).value, [1]);
+  test('removeWhere', () {
+    expect(a.removeWhere((_) => _ == 1).value, []);
+    expect(a.removeWhere((_) => _ == 0).value, [1]);
     expect(a.value, [1]);
 
-    expect(b.removeWhereBool((_) => _ == 'q').value, []);
-    expect(b.removeWhereBool((_) => _ == 'w').value, ['q']);
+    expect(b.removeWhere((_) => _ == 'q').value, []);
+    expect(b.removeWhere((_) => _ == 'w').value, ['q']);
     expect(b.value, ['q']);
 
-    expect(c.removeWhereBool((_) => _ == 1).value, [2, 3]);
-    expect(c.removeWhereBool((_) => _ == 2).value, [1, 3]);
-    expect(c.removeWhereBool((_) => _ == 3).value, [1, 2]);
-    expect(c.removeWhereBool((_) => _ == 4).value, [1, 2, 3]);
+    expect(c.removeWhere((_) => _ == 1).value, [2, 3]);
+    expect(c.removeWhere((_) => _ == 2).value, [1, 3]);
+    expect(c.removeWhere((_) => _ == 3).value, [1, 2]);
+    expect(c.removeWhere((_) => _ == 4).value, [1, 2, 3]);
     expect(c.value, [1, 2, 3]);
   });
 
