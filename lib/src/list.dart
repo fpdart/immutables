@@ -43,9 +43,9 @@ class IList<E> {
 
   IList<E> filter(bool f(E)) => removeWhere((_) => !f(_));
 
-  IList<E> add(_) => _ is List
-      ? IList(<E>[]..addAll(_value)..addAll(_ as List<E>))
-      : IList(_value.toList()..add(_));
+  IList<E> addAll(List<E> _) => IList(<E>[]..addAll(_value)..addAll(_));
+
+  IList<E> add(_) => _ is List ? addAll(_) : IList(_value.toList()..add(_));
 
   IList<E> operator +(_) => add(_);
 
