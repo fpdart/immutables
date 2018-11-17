@@ -150,7 +150,6 @@ void main() {
 
   test('Add', () {
     expect(a.add(1).value, [1, 1]);
-    expect(a.value, [1]);
     expect(a.add(1).add(2).add(3).value, [1, 1, 2, 3]);
     expect(a.value, [1]);
 
@@ -158,19 +157,27 @@ void main() {
     expect(b.value, ['q']);
   });
 
-  test('+', () {
-    expect((a + 1).value, [1, 1]);
-    expect(a.value, [1]);
-    expect((a + 1 + 2 + 3).value, [1, 1, 2, 3]);
-    expect(a.value, [1]);
+  group('+ operator', () {
+    test('With common types', () {
+      expect((a + 1).value, [1, 1]);
+      expect((a + 1 + 2 + 3).value, [1, 1, 2, 3]);
+      expect(a.value, [1]);
 
-    expect((b + 'w').value, ['q', 'w']);
-    expect(b.value, ['q']);
+      expect((b + 'w').value, ['q', 'w']);
+      expect(b.value, ['q']);
+    });
+
+    test('With list', () {
+      expect((a + [2, 3]).value, [1, 2, 3]);
+      expect(a.value, [1]);
+
+      expect((b + ['w', 'e']).value, ['q', 'w', 'e']);
+      expect(b.value, ['q']);
+    });
   });
 
   test('Remove', () {
     expect(a.remove(1).value, []);
-    expect(a.value, [1]);
     expect(a.remove(0).value, [1]);
     expect(a.value, [1]);
 
@@ -178,14 +185,25 @@ void main() {
     expect(c.value, [1, 2, 3]);
   });
 
-  test('-', () {
-    expect((a - 1).value, []);
-    expect(a.value, [1]);
-    expect((a - 0).value, [1]);
-    expect(a.value, [1]);
+  group('- operator', () {
+    test('With common types', () {
+      expect((a - 1).value, []);
+      expect((a - 0).value, [1]);
+      expect(a.value, [1]);
 
-    expect((c - 1).value, [2, 3]);
-    expect(c.value, [1, 2, 3]);
+      expect((c - 1).value, [2, 3]);
+      expect(c.value, [1, 2, 3]);
+    });
+
+    test('With common list', () {
+      expect((a - [1, 2]).value, []);
+      expect((a - [2]).value, [1]);
+      expect(a.value, [1]);
+
+      expect((c - [1]).value, [2, 3]);
+      expect((c - [2, 3]).value, [1]);
+      expect(c.value, [1, 2, 3]);
+    });
   });
 
   test('[] operator', () {

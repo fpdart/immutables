@@ -43,13 +43,17 @@ class IList<E> {
 
   IList<E> filter(bool f(E)) => removeWhere((_) => !f(_));
 
-  IList<E> add(E _) => IList(_value.toList()..add(_));
+  IList<E> add(_) => _ is List
+      ? IList(<E>[]..addAll(_value)..addAll(_ as List<E>))
+      : IList(_value.toList()..add(_));
 
-  IList<E> operator +(E _) => add(_);
+  IList<E> operator +(_) => add(_);
 
-  IList<E> remove(E _) => IList(_value.toList()..remove(_));
+  IList<E> remove(_) => _ is List
+      ? removeWhere((v) => _.contains(v))
+      : IList(_value.toList()..remove(_));
 
-  IList<E> operator -(E _) => remove(_);
+  IList<E> operator -(_) => remove(_);
 
   E operator [](int index) => _value[index];
 
