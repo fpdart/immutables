@@ -61,9 +61,9 @@ class IList<E> {
    *      IList([2, 4, 6, 8]).firstWhere((value) => 0 == (value % 2)); // 2
    * 
    */
-  /* E | null */ firstWhere(bool f(E)) {
-    for (var _ in _value) if (f(_)) return _;
-  }
+  /* E | null */ firstWhere(bool f(E)) => _oneWhere(_value, f);
+
+  /* E | null */ lastWhere(bool f(E)) => _oneWhere(_value.reversed.toList(), f);
 
   /**
    * 
@@ -135,4 +135,8 @@ class IList<E> {
   void operator []=(int _, E value) => throw new Exception('Woops');
 
   List<E> _toList() => _value.toList();
+
+  /* E | null */ _oneWhere(List<E> values, bool f(E _)) {
+    for (var _ in values) if (f(_)) return _;
+  }
 }

@@ -114,6 +114,25 @@ void main() {
     expect(c.firstWhere((_) => _ == 1), 1);
     expect(c.firstWhere((_) => _ == 0), null);
     expect(c.value, [1, 2, 3]);
+
+    expect(IList([2, 4, 6, 8]).firstWhere((_) => 0 == (_ % 2)), 2);
+  });
+
+  test('lastWhere', () {
+    expect(a.lastWhere((_) => _ == 2), null);
+    expect(a.lastWhere((_) => _ == 1), 1);
+    expect(a.value, [1]);
+
+    expect(b.lastWhere((_) => _ == 'ww'), null);
+    expect(b.lastWhere((_) => _ == 'q'), 'q');
+    expect(b.value, ['q']);
+
+    expect(c.lastWhere((_) => _ == 2), 2);
+    expect(c.lastWhere((_) => _ == 1), 1);
+    expect(c.lastWhere((_) => _ == 0), null);
+    expect(c.value, [1, 2, 3]);
+
+    expect(IList([2, 4, 6, 8]).lastWhere((_) => 0 == (_ % 2)), 8);
   });
 
   test('removeWhere', () {
