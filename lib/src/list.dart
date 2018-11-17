@@ -9,6 +9,10 @@ class IList<E> {
 
   E get last => _value.last;
 
+  E get head => first;
+
+  IList<E> get tail => skip(1);
+
   bool get isEmpty => _value.isEmpty;
 
   IList(value) {

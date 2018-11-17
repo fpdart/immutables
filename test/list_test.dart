@@ -213,4 +213,10 @@ void main() {
     expect(c[1], 2);
     expect(c[2], 3);
   });
+
+  test('Tail', () {
+    expect(a.tail.value, []);
+    expect(b.tail.value, []);
+    expect(c.tail.value, [2, 3]);
+  });
 }
