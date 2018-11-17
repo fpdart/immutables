@@ -1,6 +1,6 @@
 # Imutable data structures
 
-### List, ...
+### List, Map
 
 ### Examples
 

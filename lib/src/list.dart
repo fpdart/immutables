@@ -1,7 +1,7 @@
 class IList<E> {
   List<E> _value;
 
-  List<E> get value => _value;
+  List<E> get value => _toList();
 
   int get length => _value.length;
 

@@ -1,6 +1,6 @@
 name: immutables
 description: Immutable structures in dart. Laconic code without overhead.
-version: 0.0.1
+version: 0.1.0
 homepage: https://github.com/fpdart/nullable
 author: FPDart Team <shindakioku@gmail.com>
 

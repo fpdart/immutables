@@ -10,6 +10,13 @@ void main() {
     {'b': 2}
   ]);
 
+  test('Value getter', () {
+    a.value.add(22);
+    expect(a.value, [1]);
+
+    c.tail.add(5).add(11);
+    expect(c.value, [1, 2, 3]);
+  });
   test('Getters', () {
     expect(a.length, 1);
     expect(b.length, 1);
