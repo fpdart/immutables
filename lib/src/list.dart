@@ -63,6 +63,11 @@ class IList<E> {
    */
   /* E | null */ firstWhere(bool f(E)) => _oneWhere(_value, f);
 
+  /**
+   * 
+   *      IList([2, 4, 6, 8]).lastWhere((value) => 0 == (value % 2)); // 8
+   * 
+   */
   /* E | null */ lastWhere(bool f(E)) => _oneWhere(_value.reversed.toList(), f);
 
   /**
