@@ -1,248 +1,85 @@
-import 'package:immutables/immutables.dart';
+import 'dart:math';
+
 import 'package:test/test.dart';
 
 void main() {
-  var a = IList<int>([1]);
-  var b = IList<String>(['q']);
-  var c = IList<int>([1, 2, 3]);
-  var d = IList([
-    {'a': 1},
-    {'b': 2}
-  ]);
-
-  test('Value getter', () {
-    a.value.add(22);
-    expect(a.value, [1]);
-
-    c.tail.add(5).add(11);
-    expect(c.value, [1, 2, 3]);
+  test('empty list is empty', () {
+    final empty = IList();
+    expect(empty.isEmpty, true);
+    expect(empty.isNotEmpty, false);
   });
-  test('Getters', () {
-    expect(a.length, 1);
-    expect(b.length, 1);
-    expect(c.length, 3);
-    expect(d.length, 2);
+}
 
-    expect(a.first, 1);
-    expect(b.first, 'q');
-    expect(c.first, 1);
-    expect(d.first, {'a': 1});
+class IList<E> {
+  final List<E> _;
 
-    expect(a.last, 1);
-    expect(b.last, 'q');
-    expect(c.last, 3);
-    expect(d.last, {'b': 2});
+  get isEmpty => _.isEmpty;
 
-    expect(a.isEmpty, false);
-    expect(b.isEmpty, false);
-    expect(c.isEmpty, false);
-    expect(d.isEmpty, false);
-    expect(IList([]).isEmpty, true);
-  });
+  get isNotEmpty => _.isNotEmpty;
 
-  test('Contains', () {
-    expect(a.contains(1), true);
-    expect(a.contains(2), false);
+  IList([Iterable<E> elements]) : _ = List.from(elements ?? []);
 
-    expect(b.contains('e'), false);
-    expect(b.contains('q'), true);
+  IList.filled(int length, E fill) : _ = List.filled(length, fill);
 
-    expect(c.contains(2), true);
-    expect(c.contains(3), true);
-    expect(c.contains(0), false);
-  });
+  IList.generate(int length, E generator(int index))
+      : _ = List.generate(length, generator);
 
-  test('reduce', () {
-    expect(a.reduce((acc, value) => value + 1), 1);
-    expect(b.reduce((acc, value) => value + 'w'), 'q');
-    expect(c.reduce((acc, value) => acc + value), 6);
-    expect(d.reduce((acc, value) => {'b': 2}), {'b': 2});
-  });
+  E operator [](int index) => _[index];
 
-  test('Fold', () {
-    expect(a.fold(1, (acc, value) => value + 1), 2);
-    expect(b.fold('w', (acc, value) => value + 'w'), 'qw');
-    expect(c.fold(0, (acc, value) => acc + value), 6);
-    expect(d.fold({'c': 2}, (acc, value) => acc), {'c': 2});
-  });
+  int get length => _.length;
 
-  test('Map', () {
-    expect(a.map((_) => _ + 1).value, IList([2]).value);
-    expect(b.map((_) => _ + 'w').value, IList(['qw']).value);
-    expect(
-        c.map((_) => {'a': _}).value,
-        IList([
-          {'a': 1},
-          {'a': 2},
-          {'a': 3}
-        ]).value);
-  });
+  Iterable<E> get reversed => _.reversed;
 
-  test('take', () {
-    expect(a.take(-1).value, [1]);
-    expect(a.take(0).value, [1]);
-    expect(a.take(2).value, [1]);
+  IList<E> sort([int compare(E a, E b)]) => IList(_).._.sort(compare);
 
-    expect(b.take(-1).value, ['q']);
-    expect(b.take(0).value, ['q']);
-    expect(b.take(2).value, ['q']);
+  IList<E> shuffle([Random random]) => IList(_).._.shuffle(random);
 
-    expect(c.take(-1).value, [1]);
-    expect(c.take(0).value, [1]);
-    expect(c.take(2).value, [1, 2]);
-    expect(c.take(44444).value, [1, 2, 3]);
-  });
+  int indexOf(E element, [int start = 0]) => _.indexOf(element, start);
 
-  test('skip', () {
-    expect(a.skip(-1).value, [1]);
-    expect(a.skip(0).value, [1]);
-    expect(a.skip(2).value, []);
+  int indexWhere(bool test(E element), [int start = 0]) =>
+      _.indexWhere(test, start);
 
-    expect(b.skip(-1).value, ['q']);
-    expect(b.skip(0).value, ['q']);
-    expect(b.skip(2).value, []);
+  int lastIndexWhere(bool test(E element), [int start]) =>
+      _.lastIndexWhere(test, start);
 
-    expect(c.skip(-1).value, [1, 2, 3]);
-    expect(c.skip(0).value, [1, 2, 3]);
-    expect(c.skip(2).value, [3]);
-    expect(c.skip(44444).value, []);
-  });
+  int lastIndexOf(E element, [int start]) => _.lastIndexOf(element, start);
 
-  test('firstWhere', () {
-    expect(a.firstWhere((_) => _ == 2), null);
-    expect(a.firstWhere((_) => _ == 1), 1);
-    expect(a.value, [1]);
+  IList<E> insert(int index, E element) => IList(_).._.insert(index, element);
 
-    expect(b.firstWhere((_) => _ == 'ww'), null);
-    expect(b.firstWhere((_) => _ == 'q'), 'q');
-    expect(b.value, ['q']);
+  IList<E> insertAll(int index, Iterable<E> iterable) =>
+      IList(_).._.insertAll(index, iterable);
 
-    expect(c.firstWhere((_) => _ == 2), 2);
-    expect(c.firstWhere((_) => _ == 1), 1);
-    expect(c.firstWhere((_) => _ == 0), null);
-    expect(c.value, [1, 2, 3]);
+  IList<E> setAll(int index, Iterable<E> iterable) =>
+      IList(_).._.setAll(index, iterable);
 
-    expect(IList([2, 4, 6, 8]).firstWhere((_) => 0 == (_ % 2)), 2);
-  });
+  IList<E> remove(E element) => IList(_).._.remove(element);
 
-  test('lastWhere', () {
-    expect(a.lastWhere((_) => _ == 2), null);
-    expect(a.lastWhere((_) => _ == 1), 1);
-    expect(a.value, [1]);
+  IList<E> removeAt(int index) => IList(_).._.removeAt(index);
 
-    expect(b.lastWhere((_) => _ == 'ww'), null);
-    expect(b.lastWhere((_) => _ == 'q'), 'q');
-    expect(b.value, ['q']);
+  IList<E> removeLast() => IList(_).._.removeLast();
 
-    expect(c.lastWhere((_) => _ == 2), 2);
-    expect(c.lastWhere((_) => _ == 1), 1);
-    expect(c.lastWhere((_) => _ == 0), null);
-    expect(c.value, [1, 2, 3]);
+  IList<E> removeWhere(bool test(E element)) => IList(_).._.removeWhere(test);
 
-    expect(IList([2, 4, 6, 8]).lastWhere((_) => 0 == (_ % 2)), 8);
-  });
+  IList<E> retainWhere(bool test(E element)) => IList(_).._.retainWhere(test);
 
-  test('removeWhere', () {
-    expect(a.removeWhere((_) => _ == 1).value, []);
-    expect(a.removeWhere((_) => _ == 0).value, [1]);
-    expect(a.value, [1]);
+  IList<E> operator +(IList<E> other) => IList(_ + other._);
 
-    expect(b.removeWhere((_) => _ == 'q').value, []);
-    expect(b.removeWhere((_) => _ == 'w').value, ['q']);
-    expect(b.value, ['q']);
+  IList<E> sublist(int start, [int end]) => IList(_.sublist(start, end));
 
-    expect(c.removeWhere((_) => _ == 1).value, [2, 3]);
-    expect(c.removeWhere((_) => _ == 2).value, [1, 3]);
-    expect(c.removeWhere((_) => _ == 3).value, [1, 2]);
-    expect(c.removeWhere((_) => _ == 4).value, [1, 2, 3]);
-    expect(c.value, [1, 2, 3]);
-  });
+  Iterable<E> getRange(int start, int end) => _.getRange(start, end);
 
-  test('filter', () {
-    expect(a.filter((_) => _ == 1).value, [1]);
-    expect(a.filter((_) => _ == 2).value, []);
-    expect(a.value, [1]);
+  IList<E> setRange(int start, int end, Iterable<E> iterable,
+          [int skipCount = 0]) =>
+      IList(_).._.setRange(start, end, iterable, skipCount);
 
-    expect(b.filter((_) => _ == 'q').value, ['q']);
-    expect(b.filter((_) => _ == 'w').value, []);
-    expect(b.value, ['q']);
+  IList<E> removeRange(int start, int end) =>
+      IList(_).._.removeRange(start, end);
 
-    expect(c.filter((_) => _ == 1).value, [1]);
-    expect(c.filter((_) => _ == 2).value, [2]);
-    expect(c.filter((_) => 1 == _ || 2 == _).value, [1, 2]);
-    expect(c.filter((_) => 0 == (_ % 2)).value, [2]);
-    expect(c.value, [1, 2, 3]);
-  });
+  IList<E> fillRange(int start, int end, [E fillValue]) =>
+      IList(_).._.fillRange(start, end, fillValue);
 
-  test('Add', () {
-    expect(a.add(1).value, [1, 1]);
-    expect(a.add(1).add(2).add(3).value, [1, 1, 2, 3]);
-    expect(a.value, [1]);
+  IList<E> replaceRange(int start, int end, Iterable<E> replacement) =>
+      IList(_).._.replaceRange(start, end, replacement);
 
-    expect(b.add('w').value, ['q', 'w']);
-    expect(b.value, ['q']);
-  });
-
-  group('+ operator', () {
-    test('With common types', () {
-      expect((a + 1).value, [1, 1]);
-      expect((a + 1 + 2 + 3).value, [1, 1, 2, 3]);
-      expect(a.value, [1]);
-
-      expect((b + 'w').value, ['q', 'w']);
-      expect(b.value, ['q']);
-    });
-
-    test('With list', () {
-      expect((a + [2, 3]).value, [1, 2, 3]);
-      expect(a.value, [1]);
-
-      expect((b + ['w', 'e']).value, ['q', 'w', 'e']);
-      expect(b.value, ['q']);
-    });
-  });
-
-  test('Remove', () {
-    expect(a.remove(1).value, []);
-    expect(a.remove(0).value, [1]);
-    expect(a.value, [1]);
-
-    expect(c.remove(1).value, [2, 3]);
-    expect(c.value, [1, 2, 3]);
-  });
-
-  group('- operator', () {
-    test('With common types', () {
-      expect((a - 1).value, []);
-      expect((a - 0).value, [1]);
-      expect(a.value, [1]);
-
-      expect((c - 1).value, [2, 3]);
-      expect(c.value, [1, 2, 3]);
-    });
-
-    test('With common list', () {
-      expect((a - [1, 2]).value, []);
-      expect((a - [2]).value, [1]);
-      expect(a.value, [1]);
-
-      expect((c - [1]).value, [2, 3]);
-      expect((c - [2, 3]).value, [1]);
-      expect(c.value, [1, 2, 3]);
-    });
-  });
-
-  test('[] operator', () {
-    expect(a[0], 1);
-    expect(b[0], 'q');
-    expect(c[0], 1);
-    expect(c[1], 2);
-    expect(c[2], 3);
-  });
-
-  test('Tail', () {
-    expect(a.tail.value, []);
-    expect(b.tail.value, []);
-    expect(c.tail.value, [2, 3]);
-  });
+  Map<int, E> asMap() => _.asMap();
 }
