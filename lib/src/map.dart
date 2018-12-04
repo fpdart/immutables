@@ -28,7 +28,7 @@ class IMap<K, V> {
       IMap<K2, V2>(_.map(f));
 
   IMap<K, V> removeWhere(bool predicate(K key, V value)) =>
-      IMap<K, V>(Map.from(_)..removeWhere(predicate));
+      IMap(_).._.removeWhere(predicate);
 
   void forEach(void f(K key, V value)) => _.forEach(f);
 
