@@ -1,147 +1,77 @@
+import 'dart:math';
+
 class IList<E> {
-  List<E> _value;
+  final List<E> _;
 
-  List<E> get value => _toList();
+  get isEmpty => _.isEmpty;
 
-  int get length => _value.length;
+  get isNotEmpty => _.isNotEmpty;
 
-  E get first => _value.first;
+  IList([Iterable<E> elements]) : _ = List.from(elements ?? []);
 
-  E get last => _value.last;
+  IList.filled(int length, E fill) : _ = List.filled(length, fill);
 
-  E get head => first;
+  IList.generate(int length, E generator(int index))
+      : _ = List.generate(length, generator);
 
-  IList<E> get tail => skip(1);
+  E operator [](int index) => _[index];
 
-  bool get isEmpty => _value.isEmpty;
+  int get length => _.length;
 
-  IList(value) {
-    if (value is List)
-      _value = value;
-    else
-      this._value = List.from(value);
-  }
+  Iterable<E> get reversed => _.reversed;
 
-  bool contains(E _) => _value.contains(_);
+  IList<E> sort([int compare(E a, E b)]) => IList(_).._.sort(compare);
 
-  E reduce(E f(E, E _)) => _value.reduce(f);
+  IList<E> shuffle([Random random]) => IList(_).._.shuffle(random);
 
-  T fold<T>(T _, T f(T, E)) => _value.fold(_, f);
+  int indexOf(E element, [int start = 0]) => _.indexOf(element, start);
 
-  /**
-  * The same with List.map()
-  *
-  *       IList([1, 2, 3]).map((value) => value + 1).value; // [2, 3, 4]
-  *
-  */
-  IList map<T>(T f(E)) => fold(IList([]), (acc, _) => acc.add(f(_)));
+  int indexWhere(bool test(E element), [int start = 0]) =>
+      _.indexWhere(test, start);
 
-  /**
-   * 
-   *      IList([1]).take(-1).value; // [1]
-   *      IList([1]).take(0).value; // [1]
-   *      IList([1, 2, 3]).take(2).value; // [1, 2]
-   * 
-   */
-  IList<E> take(int length) =>
-      0 >= length ? IList(_value.take(1)) : IList(_value.take(length));
+  int lastIndexWhere(bool test(E element), [int start]) =>
+      _.lastIndexWhere(test, start);
 
-  /**
-   * 
-   *      IList([1]).skip(-1).value; // [1]
-   *      IList([1]).skip(0).value; // [1]
-   *      IList([1, 2, 3]).skip(2).value; // [3]   
-   * 
-   */
-  IList<E> skip(int length) =>
-      0 > length ? IList(_value.skip(0)) : IList(_value.skip(length));
+  int lastIndexOf(E element, [int start]) => _.lastIndexOf(element, start);
 
-  /**
-   * 
-   *      IList([2, 4, 6, 8]).firstWhere((value) => 0 == (value % 2)); // 2
-   * 
-   */
-  /* E | null */ firstWhere(bool f(E)) => _oneWhere(_value, f);
+  IList<E> insert(int index, E element) => IList(_).._.insert(index, element);
 
-  /**
-   * 
-   *      IList([2, 4, 6, 8]).lastWhere((value) => 0 == (value % 2)); // 8
-   * 
-   */
-  /* E | null */ lastWhere(bool f(E)) => _oneWhere(_value.reversed.toList(), f);
+  IList<E> insertAll(int index, Iterable<E> iterable) =>
+      IList(_).._.insertAll(index, iterable);
 
-  /**
-   * 
-   *      IList([1, 2, 3, 4, 5]).removeWhere((value) => 0 == (value % 2)).value; // [1, 3, 5]
-   * 
-   */
-  IList<E> removeWhere(bool f(E)) => IList(_toList()..removeWhere((_) => f(_)));
+  IList<E> setAll(int index, Iterable<E> iterable) =>
+      IList(_).._.setAll(index, iterable);
 
-  /**
-   * 
-   *      IList([1, 2, 3, 4, 5]).removeWhere((value) => 0 == (value % 2)).value; // [1, 3, 5]
-   * 
-   */
-  IList<E> filter(bool f(E)) => removeWhere((_) => !f(_));
+  IList<E> remove(E element) => IList(_).._.remove(element);
 
-  /**
-   * 
-   *      IList([1, 2, 3]).addAll([4, 5]).value; // 1, 2, 3, 4, 5
-   * 
-   */
-  IList<E> addAll(List<E> _) => IList(<E>[]..addAll(_value)..addAll(_));
+  IList<E> removeAt(int index) => IList(_).._.removeAt(index);
 
-  /**
-   * 
-   *      IList([1, 2]).add(3).value; // [1, 2, 3]
-   * 
-   */
-  IList<E> add(_) => _ is List ? addAll(_) : IList(_toList()..add(_));
+  IList<E> removeLast() => IList(_).._.removeLast();
 
-  /**
-   * 
-   *      var a = IList([1, 2]) + 3;
-   *      a.value; // [1, 2, 3]
-   * 
-   *      a = a + [4, 5];
-   *      a.value; // [1, 2, 3, 4, 5]
-   * 
-   */
-  IList<E> operator +(_) => add(_);
+  IList<E> removeWhere(bool test(E element)) => IList(_).._.removeWhere(test);
 
-  /**
-   * 
-   *      IList([1, 2, 3, 4, 5]).removeContains([1, 2, 5]).value; // [3, 4]
-   * 
-   */
-  IList<E> removeContains(List<E> _) => removeWhere((v) => _.contains(v));
+  IList<E> retainWhere(bool test(E element)) => IList(_).._.retainWhere(test);
 
-  /**
-   * 
-   *      IList([1, 2, 3]).remove(3).value; // [1, 2]
-   * 
-   */
-  IList<E> remove(_) =>
-      _ is List ? removeContains(_) : IList(_toList()..remove(_));
+  IList<E> operator +(IList<E> other) => IList(_ + other._);
 
-  /**
-   * 
-   *      var a = IList([1, 2, 3, 4, 5]) - 3;
-   *      a.value; // [1, 2, 4, 5]
-   * 
-   *      a = a - [4, 5];
-   *      a.value; // [1, 2]
-   * 
-   */
-  IList<E> operator -(_) => remove(_);
+  IList<E> sublist(int start, [int end]) => IList(_.sublist(start, end));
 
-  E operator [](int index) => _value[index];
+  Iterable<E> getRange(int start, int end) => _.getRange(start, end);
 
-  void operator []=(int _, E value) => throw new Exception('Woops');
+  IList<E> setRange(int start, int end, Iterable<E> iterable,
+          [int skipCount = 0]) =>
+      IList(_).._.setRange(start, end, iterable, skipCount);
 
-  List<E> _toList() => _value.toList();
+  IList<E> removeRange(int start, int end) =>
+      IList(_).._.removeRange(start, end);
 
-  /* E | null */ _oneWhere(List<E> values, bool f(E _)) {
-    for (var _ in values) if (f(_)) return _;
-  }
+  IList<E> fillRange(int start, int end, [E fillValue]) =>
+      IList(_).._.fillRange(start, end, fillValue);
+
+  IList<E> replaceRange(int start, int end, Iterable<E> replacement) =>
+      IList(_).._.replaceRange(start, end, replacement);
+
+  Map<int, E> asMap() => _.asMap();
+
+  void forEach(void f(E element)) => _.forEach(f);
 }
